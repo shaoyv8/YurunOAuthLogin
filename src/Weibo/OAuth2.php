@@ -117,7 +117,7 @@ class OAuth2 extends Base
      *
      * @return string
      */
-    protected function __getAccessToken($storeState, $code = null, $state = null)
+    public function __getAccessToken($storeState, $code = null, $state = null)
     {
         $this->result = $this->http->post($this->getUrl('oauth2/access_token'), [
             'client_id'		    => $this->appid,
@@ -128,13 +128,11 @@ class OAuth2 extends Base
         ])->json(true);
         if (isset($this->result['error_code']))
         {
-            throw new ApiException($this->result['error'], $this->result['error_code']);
+            throwError($this->result['error'], $this->result['error_code']);
         }
         else
         {
-            $this->openid = $this->result['uid'];
-
-            return $this->accessToken = $this->result['access_token'];
+            return $this->result;
         }
     }
 
@@ -145,11 +143,11 @@ class OAuth2 extends Base
      *
      * @return array
      */
-    public function getUserInfo($accessToken = null)
+    public function getUserInfo($accessToken = null,$openid = null)
     {
         $this->result = $this->http->get($this->getUrl('2/users/show.json', [
             'access_token'	 => null === $accessToken ? $this->accessToken : $accessToken,
-            'uid'			        => $this->openid,
+            'uid'			=> null === $openid? $this->openid : $openid,
             'screenName'	   => $this->screenName,
         ]))->json(true);
         if (isset($this->result['error_code']))

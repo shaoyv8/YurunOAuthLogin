@@ -13,8 +13,8 @@
                 urlParams: {},
                 appendParams: function(url, params) {
                     if (params) {
-                        var baseWithSearch = url.split('#')[0];
-                        var hash = url.split('#')[1];
+                        var baseWithSearch = url;
+                        var hash = '';
                         for (var key in params) {
                             var attrValue = params[key];
                             if (attrValue !== undefined) {
@@ -58,23 +58,24 @@
                     var baseUrl;
                     var redirectUri;
                     if (!code) {
-                        baseUrl = "https://open.weixin.qq.com/connect/oauth2/authorize#wechat_redirect";
+                        baseUrl = "https://open.weixin.qq.com/connect/oauth2/authorize";
                         if(scope == 'snsapi_login' && !isMp){
                             baseUrl = "https://open.weixin.qq.com/connect/qrconnect";
                         }
                         //第一步，没有拿到code，跳转至微信授权页面获取code
                         redirectUri = GWC.appendParams(baseUrl, {
                             'appid': appId,
-                            'redirect_uri': encodeURIComponent(location.href),
+                            'redirect_uri': encodeURIComponent('https://api.linknft.net/wxcallback.php'),
                             'response_type': 'code',
                             'scope': scope,
-                            'state': state,
+                            'state': state+'#wechat_redirect',
                         });
                     } else {
-                        //第二步，从微信授权页面跳转回来，已经获取到了code，再次跳转到实际所需页面
-                        redirectUri = GWC.appendParams(GWC.urlParams['redirect_uri'], {
+                        redirect_uri  = 'https://store.linknft.net/#/pages/index/index';
+                        redirectUri = GWC.appendParams(redirect_uri, {
                             'code': code,
-                            'state': state
+                            'state': state,
+                            'type': 'weixin'
                         });
                     }
                     location.href = redirectUri;

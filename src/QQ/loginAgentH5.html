@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>微博登录</title>
+        <title>QQ登录</title>
     </head>
 
     <body>
@@ -54,41 +54,28 @@
                 },
                 doRedirect: function() {
 					var code = GWC.urlParams['code'];
+					var responseType = GWC.urlParams['response_type'];
                     var appId = GWC.urlParams['client_id'];
-                    var scope = GWC.urlParams['scope'];
+                    var scope = GWC.urlParams['scope'] || 'get_user_info';
                     var state = GWC.urlParams['state'];
-                    var display = GWC.urlParams['display'];
-                    var forcelogin = GWC.urlParams['forcelogin'];
-                    var language = GWC.urlParams['language'];
                     var redirectUri;
 
                     if (!code) {
-                        //第一步，没有拿到code，跳转至授权页面获取code
-                        var url;
-                        if('mobile' === display)
-                        {
-                            url = 'https://open.weibo.cn/oauth2/authorize';
-                        }
-                        else
-                        {
-                            url = 'https://api.weibo.com/oauth2/authorize';
-                        }
-                        redirectUri = GWC.appendParams(url, {
+                        //第一步，没有拿到code，跳转至QQ授权页面获取code
+                        redirectUri = GWC.appendParams('https://graph.qq.com/oauth2.0/authorize', {
+							'response_type': responseType,
                             'client_id': appId,
-                            'redirect_uri': encodeURIComponent('https://api.linknft.net/callback.php'),
+                            'redirect_uri': encodeURIComponent('https://api.linknft.net/qqcallback.php'),
                             'scope': scope,
                             'state': state,
-                            'display': display,
-                            'forcelogin': forcelogin,
-                            'language': language,
                         });
                     } else {
-                        redirect_uri  = 'https://store.linknft.net/#/pages/index/index';
-                        //第二步，从授权页面跳转回来，已经获取到了code，再次跳转到实际所需页面
+                        //第二步，从QQ授权页面跳转回来，已经获取到了code，再次跳转到实际所需页面
+                        redirect_uri  = 'https://m.linknft.net/#/pages/index/index';
                         redirectUri = GWC.appendParams(redirect_uri, {
                             'code': code,
                             'state': state,
-                            'type': 'weibo'
+                            'type': 'qq'
                         });
                     }
 

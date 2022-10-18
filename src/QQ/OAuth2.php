@@ -84,7 +84,7 @@ class OAuth2 extends Base
      *
      * @return string
      */
-    protected function __getAccessToken($storeState, $code = null, $state = null)
+    public function __getAccessToken($storeState, $code = null, $state = null)
     {
         $this->result = $this->http->get(
             $this->getUrl('oauth2.0/token', [
@@ -111,16 +111,16 @@ class OAuth2 extends Base
      *
      * @return array
      */
-    public function getUserInfo($accessToken = null)
+    public function getUserInfo($accessToken = null,$openid = null)
     {
-        if (null === $this->openid)
+        if (null === $openid)
         {
             $this->getOpenID($accessToken);
         }
         $this->result = $this->http->get($this->getUrl('user/get_user_info', [
             'access_token'			     => null === $accessToken ? $this->accessToken : $accessToken,
             'oauth_consumer_key'	 => $this->appid,
-            'openid'				          => $this->openid,
+            'openid'				          => null === $openid ? $this->openid : $openid,
         ]))->json(true);
         if (isset($this->result['ret']) && 0 != $this->result['ret'])
         {
@@ -128,6 +128,7 @@ class OAuth2 extends Base
         }
         else
         {
+            $this->result['openid'] = null === $openid ? $this->openid : $openid;
             return $this->result;
         }
     }

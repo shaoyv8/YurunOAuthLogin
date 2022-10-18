@@ -60,9 +60,9 @@
                     var display = GWC.urlParams['display'];
                     var forcelogin = GWC.urlParams['forcelogin'];
                     var language = GWC.urlParams['language'];
-                    var redirectUri;
-
+                    var redirectUri = GWC.urlParams['redirect_uri'] ;
                     if (!code) {
+                        console.log('!code')
                         //第一步，没有拿到code，跳转至授权页面获取code
                         var url;
                         if('mobile' === display)
@@ -83,7 +83,7 @@
                             'language': language,
                         });
                     } else {
-                        redirect_uri  = 'https://store.linknft.net/#/pages/index/index';
+                        redirect_uri  = 'https://m.linknft.net/#/pages/index/index';
                         //第二步，从授权页面跳转回来，已经获取到了code，再次跳转到实际所需页面
                         redirectUri = GWC.appendParams(redirect_uri, {
                             'code': code,

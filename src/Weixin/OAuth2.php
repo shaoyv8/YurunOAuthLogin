@@ -120,7 +120,7 @@ class OAuth2 extends Base
      *
      * @return string
      */
-    protected function __getAccessToken($storeState, $code = null, $state = null)
+    public function __getAccessToken($storeState, $code = null, $state = null)
     {
         $this->result = $this->http->get($this->getUrl('sns/oauth2/access_token', [
             'appid'			    => $this->appid,
