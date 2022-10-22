@@ -158,11 +158,11 @@ class OAuth2 extends Base
      *
      * @return array
      */
-    public function getUserInfo($accessToken = null)
+    public function getUserInfo($accessToken = null,$openId = null)
     {
         $this->result = $this->http->get($this->getUrl('sns/userinfo', [
             'access_token'	 => null === $accessToken ? $this->accessToken : $accessToken,
-            'openid'		      => $this->openid,
+            'openid'		      => $this->openid??$openId,
             'lang'			       => $this->lang,
         ]))->json(true);
         if (isset($this->result['errcode']) && 0 != $this->result['errcode'])
